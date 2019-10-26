@@ -7,3 +7,36 @@ groups:
     annotations:
       description: A dependência {{$labels.name}} do serviço {{$labels.prsn}} não está respondendo.
       summary: Alerta para caso uma dependência passe mais de 2 minutos sem resposta
+
+- name: high_error_rate
+  rules:
+  - alert: request_seconds_count_error_rate_90_percent
+    expr: sum by (addr, prsn) (request_seconds_count:irate) >= 0.9
+    for: 2m
+    labels:
+      severity: critical
+      type_signal: error_rate
+    annotations:
+      description: O recurso no endereço {{$labels.addr}} do serviço {{$labels.prsn}} está com erro acima de 90%.
+      summary: Alerta para caso as requisições de um recurso esteja com mais de 90% de erro por mais de 2 minutos.
+
+  - alert: request_seconds_count_error_rate_50_percent
+    expr: sum by (addr, prsn) (request_seconds_count:irate) >= 0.5
+    for: 5m
+    labels:
+      severity: major
+      type_signal: error_rate
+    annotations:
+      description: O recurso no endereço {{$labels.addr}} do serviço {{$labels.prsn}} está com erro acima de 50%.
+      summary: Alerta para caso as requisições de um recurso esteja com mais de 50% de erro por mais de 5 minutos.
+
+  - alert: request_seconds_count_error_rate_20_percent
+    expr: sum by (addr, prsn) (request_seconds_count:irate) >= 0.2
+    for: 10m
+    labels:
+      severity: minor
+      type_signal: error_rate
+    annotations:
+      description: O recurso no endereço {{$labels.addr}} do serviço {{$labels.prsn}} está com erro acima de 20%.
+      summary: Alerta para caso as requisições de um recurso esteja com mais de 20% de erro por mais de 10 minutos.
+
